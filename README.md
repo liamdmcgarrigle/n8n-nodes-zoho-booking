@@ -61,6 +61,7 @@ Normally to counteract these types of unexpected errors I would add a search API
 Here is a list that I will try to keep updated of areas to check if you're getting unexpected vague errors.
 - The appointment was set in the past
 - The appointment is too soon in the future and conflicts with your preferences
+- Setting resource appointments without the resource ID in _"Additional Fields"_
 
 ### Handling Errors
 You should manually check in your workflow to ensure you won't meet any of those conditions that cause unexpected errors.  \
