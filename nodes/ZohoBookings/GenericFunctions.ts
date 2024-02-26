@@ -1,4 +1,6 @@
 import {
+	IExecuteFunctions,
+	IHttpRequestOptions,
 	INode,
 	NodeOperationError,
 } from "n8n-workflow";
@@ -80,4 +82,34 @@ export interface createBookingBody {
 	"resource_id"?: string,
 	"group_id"?: string,
 	"additional_fields"?: string,
+}
+
+export interface rescheduleBookingBody {
+	"staff_id"?: string,
+	"booking_id": string,
+	"start_time"?: string,
+	"iso_start_time"?: string
+	"time_zone"?: string,
+}
+
+
+
+
+export async function getBookingDetails(executeDetails: IExecuteFunctions, baseUrl: string, bookingId: string)  {
+
+	const options: IHttpRequestOptions = {
+		url: `${baseUrl}/getappointment?booking_id=${bookingId.replace('#', '')}`,
+		method: 'GET',
+		json: false,
+		headers: {
+			"content-type":"multipart/form-data"
+		}
+	};
+
+		return await executeDetails.helpers.httpRequestWithAuthentication.call(
+			executeDetails,
+			'zohoBookingsOAuth2Api',
+			options,
+	);
+
 }

@@ -20,7 +20,8 @@ import {
 	createBookingBody,
 	customCustomerFields,
 	defaultCustomerFields,
-	keyValueInputCustomerFields
+	getBookingDetails,
+	keyValueInputCustomerFields,
 } from './GenericFunctions';
 const { DateTime } = require("luxon");
 
@@ -196,106 +197,75 @@ export class ZohoBookings implements INodeType {
 						// --------------------------------------------------------------------------------
 						// ---------------------------- Reschedule Appointment ----------------------------
 						// --------------------------------------------------------------------------------
-						// if( this.getNodeParameter('operation', 0) === 'rescheduleAppointment' ) {
+						if( this.getNodeParameter('operation', 0) === 'rescheduleAppointment' ) {
 
-				// 			const serviceId = this.getNodeParameter('serviceId', itemIndex, '') as string;
-				// 			const staffId = this.getNodeParameter('staffId', itemIndex, '') as string;
-				// 			const startTime = this.getNodeParameter('startTime', itemIndex, '') as string;
-				// 			const customerName = this.getNodeParameter('customerName', itemIndex, '') as string;
-				// 			const customerEmail = this.getNodeParameter('customerEmail', itemIndex, '') as string;
-				// 			const customerPhone = this.getNodeParameter('customerPhone', itemIndex, '') as string;
-				// 			const additionalFields = this.getNodeParameter('additionalFields', itemIndex) as IDataObject; // gets values under additionalFields
-				// 			const resourceId = additionalFields.resourceId as string;
-				// 			const groupId = additionalFields.groupId as string;
-				// 			const timeZone = additionalFields.timeZone as string;
-
-				// 			// conditionally assign key value custom customer data
-				// 			let customCustomerFeildsKeyValue: IDataObject | Array<keyValueInputCustomerFields>  = this.getNodeParameter('customCustomerFeildsKeyValue', itemIndex, '') as IDataObject;
-				// 			if(customCustomerFeildsKeyValue){
-				// 				customCustomerFeildsKeyValue = customCustomerFeildsKeyValue.additional_fields as Array<keyValueInputCustomerFields>;
-				// 			}
-
-				// 			// conditionally assign json custom customer data
-				// 			const customCustomerFeildsJsonGetter = this.getNodeParameter('customCustomerFeildsJson', itemIndex, '') as string;
-				// 			let customCustomerFeildsJson: customCustomerFields | undefined;
-				// 			if(customCustomerFeildsJsonGetter){
-				// 				customCustomerFeildsJson = JSON.parse(customCustomerFeildsJsonGetter) as customCustomerFields;
-				// 			}
-
-				// 			// Set custom customer data based on field inputs
-				// 			let customCustomerDetails: customCustomerFields;
-				// 			if(customCustomerFeildsJson){
-				// 				customCustomerDetails = customCustomerFeildsJson;
-				// 			} else {
-				// 				customCustomerDetails = {};
-				// 			}
-
-				// 			let defaultcustomerDetails: defaultCustomerFields = {
-				// 				"name": customerName,
-				// 				"email": customerEmail,
-				// 			}
-
-				// 			if(customerPhone){
-				// 				defaultcustomerDetails['phone_number'] = customerPhone;
-				// 			}
-
-				// 			if(customCustomerFeildsKeyValue){
-				// 				customCustomerFeildsKeyValue.forEach(data => {
-				// 					customCustomerDetails[data.name] = data.value;
-				// 				});
-				// 			}
-
-
-				// 			let formData: createBookingBody = {
-				// 				"service_id": serviceId,
-				// 				"staff_id": staffId,
-				// 				"from_time": DateTime.fromFormat(startTime, "yyyy-MM-dd HH:mm:ss").toFormat('dd-MMM-yyyy HH:mm:ss'),
-				// 				// "customer_details": JSON.stringify({...defaultcustomerDetails, ...customCustomerDetails})
-				// 				"customer_details": JSON.stringify({...defaultcustomerDetails,})
-				// 			}
-
-				// 			if(customCustomerDetails){
-				// 				formData.additional_fields = JSON.stringify(customCustomerDetails);
-				// 			}
-
-				// 			if(resourceId) {
-				// 				formData.resource_id = resourceId;
-				// 			}
-
-				// 			if(groupId) {
-				// 				formData.group_id = groupId;
-				// 			}
-
-				// 			if(timeZone){
-				// 				checkTimeZone(this.getNode(), timeZone, itemIndex);
-				// 				formData.time_zone = timeZone;
-				// 			}
+	// This is very annoyingly not working. I tried to debug their api for hours but the issue is definitly on their side
+	// I am moving on for now and will come back to this.
+	// i posed here https://help.zoho.com/portal/en/community/topic/issues-with-reschedule-api
+	// hopefully someone will help me
 
 
 
-				// 			const options: IHttpRequestOptions = {
+						// 	const bookingId = this.getNodeParameter('bookingId', itemIndex, '') as string;
+						// 	const startTime = this.getNodeParameter('startTime', itemIndex, '') as string;
+						// 	const additionalFields = this.getNodeParameter('additionalFields', itemIndex) as IDataObject;
+						// 	const timeZone = additionalFields.timeZone as string;
 
-				// 				url: `${baseUrl}/appointment`,
-				// 				method: 'POST',
-				// 				body:formData,
-				// 				json: false,
-				// 				headers: {
-				// 					"content-type":"multipart/form-data"
-				// 				}
-				// 			};
+						// 	// const apptInfo = await getBookingDetails(this, baseUrl, bookingId);
 
-				// 				const response = await this.helpers.httpRequestWithAuthentication.call(
-				// 				this,
-				// 				'zohoBookingsOAuth2Api',
-				// 				options,
-				// 			);
+						// 	let formData: rescheduleBookingBody = {
+						// 		"booking_id": bookingId,
+						// 		// "start_time": DateTime.fromFormat(startTime, "yyyy-MM-dd HH:mm:ss").toFormat('dd-MMM-yyyy HH:mm:ss'),
+						// 		"start_time": DateTime.fromFormat(startTime, "yyyy-MM-dd HH:mm:ss").toFormat('dd-MMM-yyyy HH:mm:ss'),
 
-				// 			item.json['zohoResponse'] = response;
+						// 		// "staff_id": apptInfo.response.returnvalue.staff_id,
+						// 	}
 
-				// 		}
+						// 	if(timeZone){
+						// 		checkTimeZone(this.getNode(), timeZone, itemIndex);
+						// 		formData.time_zone = timeZone;
+						// 	}
+
+						// 	const options: IHttpRequestOptions = {
+						// 		url: `${baseUrl}/rescheduleappointment`,
+						// 		method: 'POST',
+						// 		body:formData,
+						// 		json: false,
+						// 		headers: {
+						// 			"content-type":"multipart/form-data",
+						// 		}
+						// 	};
+
+						// 		const response = await this.helpers.httpRequestWithAuthentication.call(
+						// 		this,
+						// 		'zohoBookingsOAuth2Api',
+						// 		options,
+						// 	);
+
+						// 	item.json['zohoResponse'] = response;
+
+						}
 
 
 				}
+
+						// --------------------------------------------------------------------------------
+						// ---------------------------- Get Appointment Details ---------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'getAppointment' ) {
+
+							const bookingId = this.getNodeParameter('bookingId', itemIndex, '') as string;
+
+
+							const response = await getBookingDetails(this, baseUrl, bookingId);
+
+
+							item.json['zohoResponse'] = response;
+
+						}
+
+
+
 
 
 				} catch (error) {
