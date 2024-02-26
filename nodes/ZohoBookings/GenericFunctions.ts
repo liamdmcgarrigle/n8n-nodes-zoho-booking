@@ -113,3 +113,29 @@ export async function getBookingDetails(executeDetails: IExecuteFunctions, baseU
 	);
 
 }
+
+export async function updateBookingStatus(executeDetails: IExecuteFunctions, baseUrl: string, bookingId: string, updatedStatus: "completed" | "cancel" | "noshow" )  {
+
+
+	let formData = {
+		"booking_id": bookingId,
+		"action": updatedStatus,
+	}
+
+	const options: IHttpRequestOptions = {
+		url: `${baseUrl}/updateappointment`,
+		method: 'POST',
+		json: false,
+		body: formData,
+		headers: {
+			"content-type":"multipart/form-data"
+		}
+	};
+
+		return await executeDetails.helpers.httpRequestWithAuthentication.call(
+			executeDetails,
+			'zohoBookingsOAuth2Api',
+			options,
+	);
+
+}

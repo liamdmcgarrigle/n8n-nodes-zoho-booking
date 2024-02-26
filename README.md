@@ -12,6 +12,7 @@
 		- [Resource Booking](#resource-booking)
 		- [Group Booking (Multiple Customers)](#group-booking-multiple-customers)
 		- [Collective Booking (Multiple Staff)](#collective-booking-multiple-staff)
+		- [Mark as Completed/No Show](#mark-as-completedno-show)
 
 # Overview of Community Zoho Calendar n8n Node
 I created this node because an organization I am affiliated with uses Zoho software and I would like to make it easier for our users to automate with n8n.  \
@@ -98,3 +99,12 @@ It should work by passing in the service ID in the corresponding field and passi
 
 
 If you figure out how to access the group IDs please [let me know](https://github.com/liamdmcgarrigle)!
+
+### Mark as Completed/No Show
+You can not mark an appointment as completed or as a no-show before the start time. It needs to be after the start time.
+
+If you want to set as no-show or complete beforehand, you can make a workaround using n8n. Have a workflow specifically for this use.  \
+Have the workflow check the start time of the appointment, then have a wait node set to `resume` at `At Specified Time` and use the appointment start time + a few minutes. 
+Then have the node after that be the no-show or completed step. 
+
+There will be a delay, but this is the only option Zoho Bookings gave us.

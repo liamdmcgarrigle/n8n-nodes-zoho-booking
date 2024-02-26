@@ -30,11 +30,6 @@ export const appointmentOperations: INodeProperties[] = [
 				action: 'Reschedule appointment',
 			},
 			{
-				name: 'Update Appointment Detals',
-				value: 'updateAppointment',
-				action: 'Update appointment',
-			},
-			{
 				name: 'Get Appointment Details',
 				value: 'getAppointment',
 				action: 'Get appointment',
@@ -76,7 +71,20 @@ export const appointmentFields: INodeProperties[] = [
 			},
 		},
 	},
-
+	{
+		displayName: 'This will only work after the appointment has started. See docs for more info.',
+		name: 'notice',
+		type: 'notice',
+		default: '',
+		displayOptions: {
+			show: {
+				operation: [
+					'markAsNoShow',
+					'markAsCompleted',
+				]
+			},
+		},
+	},
 
 
 	// 					SIMILAR FIELDS

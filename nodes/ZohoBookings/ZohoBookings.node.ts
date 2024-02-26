@@ -22,6 +22,7 @@ import {
 	defaultCustomerFields,
 	getBookingDetails,
 	keyValueInputCustomerFields,
+	updateBookingStatus,
 } from './GenericFunctions';
 const { DateTime } = require("luxon");
 
@@ -244,10 +245,9 @@ export class ZohoBookings implements INodeType {
 
 						// 	item.json['zohoResponse'] = response;
 
-						}
+							}
 
 
-				}
 
 						// --------------------------------------------------------------------------------
 						// ---------------------------- Get Appointment Details ---------------------------
@@ -264,6 +264,66 @@ export class ZohoBookings implements INodeType {
 
 						}
 
+
+						// --------------------------------------------------------------------------------
+						// ------------------------------ Cancel Appointment  -----------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'cancelAppointment' ) {
+
+							const bookingId = this.getNodeParameter('bookingId', itemIndex, '') as string;
+
+							const response = await updateBookingStatus(
+								this,
+								baseUrl,
+								bookingId,
+								"cancel"
+								)
+
+
+							item.json['zohoResponse'] = response;
+
+						}
+
+						// --------------------------------------------------------------------------------
+						// -------------------------------- Set as No Show  -------------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'markAsNoShow' ) {
+
+							const bookingId = this.getNodeParameter('bookingId', itemIndex, '') as string;
+
+							const response = await updateBookingStatus(
+								this,
+								baseUrl,
+								bookingId,
+								"noshow"
+								)
+
+
+							item.json['zohoResponse'] = response;
+
+						}
+
+						// --------------------------------------------------------------------------------
+						// ------------------------------ Set as Completed  -------------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'markAsCompleted' ) {
+
+							const bookingId = this.getNodeParameter('bookingId', itemIndex, '') as string;
+
+							const response = await updateBookingStatus(
+								this,
+								baseUrl,
+								bookingId,
+								"completed"
+								)
+
+
+							item.json['zohoResponse'] = response;
+
+						}
+
+
+					} // appt operations
 
 
 
