@@ -359,7 +359,7 @@ export const otherFields: INodeProperties[] = [
 				operation: [
 					'getAvailability',
 					'getStaff',
-					'getWorkspaces',
+					'getWorkspace',
 					'getServices',
 					'getResources'
 				]

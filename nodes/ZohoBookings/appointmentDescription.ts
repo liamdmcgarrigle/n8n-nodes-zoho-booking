@@ -420,7 +420,7 @@ export const appointmentFields: INodeProperties[] = [
 
 	//
 	//
-	// ADDITINAL FIELDS FOR UPDATING APPOINTMENT
+	// ADDITINAL FIELDS FOR rescheduling APPOINTMENT
 	//
 
 	{
@@ -460,5 +460,42 @@ export const appointmentFields: INodeProperties[] = [
 		],
 	},
 
-]
+	//
+	//
+	// ADDITINAL FIELDS FOR the rest
+	//
 
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		default: {},
+		placeholder: 'Add Field',
+		displayOptions: {
+			show: {
+				operation: [
+					'getAppointment',
+					'cancelAppointment',
+					'markAsNoShow',
+					'markAsCompleted',
+				]
+			},
+		},
+		options: [
+			{
+				displayName: 'Zoho Region',
+				name: 'region',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					...countryDomains
+				],
+				// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
+				default: '.com',
+			},
+
+
+		],
+	},
+
+]
