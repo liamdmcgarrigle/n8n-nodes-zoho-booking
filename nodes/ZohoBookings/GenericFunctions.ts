@@ -278,5 +278,115 @@ export async function getAvailabilityForDateRange(
 	}
 
 	return availableTimes;
+}
+
+
+export async function fetchStaff(executeDetails: IExecuteFunctions, baseUrl: string, staffId?: string, serviceId?: string)  {
+
+	let options: IHttpRequestOptions;
+	if(staffId){
+		options = {
+			url: `${baseUrl}/staffs?&staff_id=${staffId}`,
+			method: 'GET',
+		};
+	} else if(serviceId) {
+		options = {
+			url: `${baseUrl}/staffs?&service_id=${serviceId}`,
+			method: 'GET',
+		};
+	} else {
+		options = {
+			url: `${baseUrl}/staffs`,
+			method: 'GET',
+		};
+	}
+
+		return await executeDetails.helpers.httpRequestWithAuthentication.call(
+			executeDetails,
+			'zohoBookingsOAuth2Api',
+			options,
+	);
 
 }
+
+export async function fetchWorkspace(executeDetails: IExecuteFunctions, baseUrl: string, workspaceId?: string)  {
+
+	let options: IHttpRequestOptions;
+	if(workspaceId){
+		options = {
+			url: `${baseUrl}/workspaces?&workspace_id=${workspaceId}`,
+			method: 'GET',
+		};
+	} else {
+		options = {
+			url: `${baseUrl}/workspaces`,
+			method: 'GET',
+		};
+	}
+
+		return await executeDetails.helpers.httpRequestWithAuthentication.call(
+			executeDetails,
+			'zohoBookingsOAuth2Api',
+			options,
+	);
+
+}
+
+export async function fetchService(executeDetails: IExecuteFunctions, baseUrl: string, workspaceId: string, staffId?: string, serviceId?: string)  {
+
+	let options: IHttpRequestOptions;
+	if(staffId){
+		options = {
+			url: `${baseUrl}/services?&workspace_id=${workspaceId}&staff_id=${staffId}`,
+			method: 'GET',
+		};
+	} else if(serviceId) {
+		options = {
+			url: `${baseUrl}/services?&workspace_id=${workspaceId}&service_id=${serviceId}`,
+			method: 'GET',
+		};
+	} else {
+		options = {
+			url: `${baseUrl}/services?&workspace_id=${workspaceId}`,
+			method: 'GET',
+		};
+	}
+
+		return await executeDetails.helpers.httpRequestWithAuthentication.call(
+			executeDetails,
+			'zohoBookingsOAuth2Api',
+			options,
+	);
+
+}
+
+export async function fetchResource(executeDetails: IExecuteFunctions, baseUrl: string, resourcesId?: string, serviceId?: string)  {
+
+	let options: IHttpRequestOptions;
+	if(resourcesId){
+		options = {
+			url: `${baseUrl}/resources?&resource_id=${resourcesId}`,
+			method: 'GET',
+		};
+	} else if(serviceId) {
+		options = {
+			url: `${baseUrl}/resources?service_id=${serviceId}`,
+			method: 'GET',
+		};
+	} else {
+		options = {
+			url: `${baseUrl}/resources?`,
+			method: 'GET',
+		};
+	}
+
+		return await executeDetails.helpers.httpRequestWithAuthentication.call(
+			executeDetails,
+			'zohoBookingsOAuth2Api',
+			options,
+	);
+
+}
+
+
+

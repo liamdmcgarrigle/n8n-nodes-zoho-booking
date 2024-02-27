@@ -22,6 +22,10 @@ import {
 	createBookingBody,
 	customCustomerFields,
 	defaultCustomerFields,
+	fetchResource,
+	fetchService,
+	fetchStaff,
+	fetchWorkspace,
 	getAvailabilityForDateRange,
 	getBookingDetails,
 	keyValueInputCustomerFields,
@@ -356,20 +360,95 @@ export class ZohoBookings implements INodeType {
 								endDate
 							)
 
-							// const response = await getAvailabilityForSingleDate(
-							// 	this,
-							// 	baseUrl,
-							// 	serviceId,
-							// 	staffId,
-							// 	startDate,
-							// 	)
-
-
-
-
 							item.json['availableTimeSlots'] = response;
 
 						}
+
+
+
+						// --------------------------------------------------------------------------------
+						// ---------------------------------- Get Staff -----------------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'getStaff' ) {
+
+							const staffId = this.getNodeParameter('staffId', itemIndex, '') as string;
+							const serviceId = this.getNodeParameter('serviceId', itemIndex, '') as string;
+
+
+							const response = await fetchStaff(
+								this,
+								baseUrl,
+								staffId,
+								serviceId
+							)
+
+
+							item.json['staffInfo'] = response;
+
+						}
+
+						// --------------------------------------------------------------------------------
+						// ------------------------------- Get Workspace(s) -------------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'getWorkspace' ) {
+							const workspaceId = this.getNodeParameter('workspaceId', itemIndex, '') as string;
+
+
+							const response = await fetchWorkspace(
+								this,
+								baseUrl,
+								workspaceId
+							)
+
+
+							item.json['workspaceInfo'] = response;
+
+						}
+
+						// --------------------------------------------------------------------------------
+						// -------------------------------- Get Services ----------------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'getServices' ) {
+
+							const staffId = this.getNodeParameter('staffId', itemIndex, '') as string;
+							const workspaceId = this.getNodeParameter('workspaceId', itemIndex, '') as string;
+							const serviceId = this.getNodeParameter('serviceId', itemIndex, '') as string;
+
+
+							const response = await fetchService(
+								this,
+								baseUrl,
+								workspaceId,
+								staffId,
+								serviceId
+							)
+
+
+							item.json['serviceInfo'] = response;
+
+						}
+
+						// --------------------------------------------------------------------------------
+						// ------------------------------- Get Resources ----------------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'getResources' ) {
+
+							const resourcesId = this.getNodeParameter('resourcesId', itemIndex, '') as string;
+							const serviceId = this.getNodeParameter('serviceId', itemIndex, '') as string;
+
+
+							const response = await fetchResource(
+								this,
+								baseUrl,
+								resourcesId,
+								serviceId,
+							)
+
+
+							item.json['resourcesInfo'] = response;
+
+						}
+
 
 
 					} // other operations
@@ -379,15 +458,12 @@ export class ZohoBookings implements INodeType {
 
 				} catch (error) {
 
-					// This node should never fail but we want to showcase how
-					// to handle errors.
 					if (this.continueOnFail()) {
 						items.push({ json: this.getInputData(itemIndex)[0].json, error, pairedItem: itemIndex });
 					} else {
-						// Adding `itemIndex` allows other workflows to handle this error
+
 						if (error.context) {
-							// If the error thrown already contains the context property,
-							// only append the itemIndex
+
 							error.context.itemIndex = itemIndex;
 							throw error;
 						}
