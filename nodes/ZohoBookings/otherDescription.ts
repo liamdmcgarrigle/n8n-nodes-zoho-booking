@@ -1,4 +1,5 @@
 import { INodeProperties } from "n8n-workflow";
+import { countryDomains } from "./GenericFunctions";
 
 export const otherOperations: INodeProperties[] = [
 
@@ -19,10 +20,10 @@ export const otherOperations: INodeProperties[] = [
 		// eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
 		options: [
 			{
-				name: 'Get Availability',
+				name: 'Get Available Times',
 				value: 'getAvailability',
-				action: 'Get availability',
-				description: 'Gets a list of available times in a given day',
+				action: 'Get availabile times',
+				description: 'Gets a list of available times in a date range',
 			},
 			{
 				name: 'Get Staff',
@@ -54,179 +55,66 @@ export const otherOperations: INodeProperties[] = [
 ]
 
 export const otherFields: INodeProperties[] = [
-	// 					SIMILAR FIELDS
-	// --------------------------------------
-	// {
-	// 	displayName: 'Calendar UID',
-	// 	name: 'calendarId',
-	// 	required: true,
-	// 	type: 'string',
-	// 	default: '',
-	// 	placeholder: '79dc7305aede44d8e7874351d00f9641',
-	// 	description: 'The UID of the calendar you want',
-	// 	displayOptions: {
-	// 		show: {
-	// 			operation: [
-	// 				'bookAppointment',
-	// 				'moveEvent',
-	// 				'deleteEvent',
-	// 				'updateEvent',
-	// 				'getEventsList',
-	// 				'getEventsDetails',
-	// 				'downloadAttachment',
-	// 				'getAttendeesDetails',
-	// 			]
-	// 		},
-	// 	},
-	// 	routing: {
-
-	// 		request: {
-	// 			method: 'GET',
-	// 			url: '/search',
-	// 			qs: {
-	// 				q: 'thingamabob',
-	// 			},
-	// 		},
-	// 	},
-	// },
-	// Event uid for get event details
-	// {
-	// 	displayName: 'Event UID',
-	// 	name: 'eventId',
-	// 	required: true,
-	// 	type: 'string',
-	// 	default: '',
-	// 	placeholder: '08cfc73476024a75a957c0524691a250@zoho.com',
-	// 	description: 'The UID of the calendar you want',
-	// 	displayOptions: {
-	// 		show: {
-	// 			operation: [
-	// 				'moveEvent',
-	// 				'deleteEvent',
-	// 				'updateEvent',
-	// 				'getEventsDetails',
-	// 				'downloadAttachment',
-	// 				'getAttendeesDetails',
-	// 			]
-	// 		},
-	// 	},
-	// },
-	// new calendar id
 	{
-		displayName: 'New Calendar UID',
-		name: 'newCalendarId',
+		displayName: 'Service ID',
+		name: 'serviceId',
 		required: true,
 		type: 'string',
 		default: '',
-		placeholder: '79dc7305aede44d8e7874351d00f9641',
-		description: 'The UID of the calendar you want to move the event to',
+		description: 'The service ID. It is the number in the URL field when in the service page.',
+		placeholder: '4378218000000746058',
 		displayOptions: {
 			show: {
+				resource: [
+					'otherActions',
+				],
 				operation: [
-					'moveEvent',
+					'getAvailability',
 				]
 			},
 		},
 	},
+
 	{
-		displayName: 'Event Title',
-		name: 'eventTitle',
+		displayName: 'Staff ID',
+		name: 'staffId',
 		required: true,
 		type: 'string',
 		default: '',
-		placeholder: 'My Really Cool Event',
-		description: 'Title of the event to be added',
+		placeholder: '4378218000009548412',
 		displayOptions: {
 			show: {
 				operation: [
-					'createNewEvent',
+					'getAvailability',
 				]
 			},
 		},
 	},
-	{
-		displayName: 'Update Event Title',
-		name: 'updateEventTitle',
-		type: 'string',
-		default: '',
-		placeholder: 'My Really Cool Event',
-		description: 'Update title of event. Leave blank to keep original name.',
-		displayOptions: {
-			show: {
-				operation: [
-					'updateEvent',
-				]
-			},
-		},
-	},
-	{
-		displayName: 'Start Time',
-		name: 'startTime',
-		type: 'dateTime',
-		default: '',
-		displayOptions: {
-			show: {
-				operation: [
-					'createNewEvent',
-				]
-			},
-		},
-	},
-	{
-		displayName: 'End Time',
-		name: 'endTime',
-		type: 'dateTime',
-		default: '',
-		displayOptions: {
-			show: {
-				operation: [
-					'createNewEvent',
 
-				]
-			},
-		},
-	},
 	{
-		displayName: 'Change Start Time',
-		name: 'startTime',
-		type: 'dateTime',
+		displayName: 'Only search the days you need. Each day in the range will be another API call which will increate runtime and use more API quota and increase loading time. Search will be limited to first 60 days in the range. See more details in the docs.',
+		name: 'notice',
+		type: 'notice',
 		default: '',
-		description: 'Leave blank to keep the same start time',
 		displayOptions: {
 			show: {
 				operation: [
-					'updateEvent',
+					'getAvailability',
 				]
 			},
 		},
 	},
-	{
-		displayName: 'Change End Time',
-		name: 'endTime',
-		type: 'dateTime',
-		default: '',
-		description: 'Leave blank to keep the same end time',
-		displayOptions: {
-			show: {
-				operation: [
-					'updateEvent',
-
-				]
-			},
-		},
-	},
-	// Range for get events search
 	{
 		displayName: 'Start Of Search Range',
 		name: 'startOfSearchRangeTime',
 		type: 'dateTime',
 		required: true,
-		description: 'Start DateTime for range to get calendar events from. Range must be under 31 days.',
+		description: 'Start DateTime for range to get availability from',
 		default: '',
 		displayOptions: {
 			show: {
 				operation: [
-					'getEventsList',
+					'getAvailability',
 				]
 			},
 		},
@@ -236,64 +124,20 @@ export const otherFields: INodeProperties[] = [
 		name: 'endOfSearchRangeTime',
 		type: 'dateTime',
 		required: true,
-		description: 'End DateTime for range to get calendar events from. Range must be under 31 days.',
+		description: 'End DateTime for range to get availability from',
 		default: '',
 		displayOptions: {
 			show: {
 				operation: [
-					'getEventsList',
+					'getAvailability',
 				]
 			},
 		},
 	},
-	{
-		displayName: 'Time Zone',
-		name: 'timeZone',
-		type: 'string',
-		default: '={{ $now.format(\'z\') }}',
-		required: true,
-		description: 'The time zone of the event',
-		displayOptions: {
-			show: {
-				operation: [
-					'createNewEvent',
-					'getEventsList',
-				]
-			},
-		},
-	},
-	{
-		displayName: 'Time Zone',
-		name: 'timeZone',
-		type: 'string',
-		default: '',
-		description: 'The updated time zone of the event. Leave blank to keep the same. If changed without new time input, it will convert the currect event time to the new time zone.',
-		displayOptions: {
-			show: {
-				operation: [
-					'updateEvent',
-				]
-			},
-		},
-	},
-	{
-		displayName: 'Event Description',
-		name: 'eventDescription',
-		type: 'string',
-		typeOptions: {
-			rows: 4,
-		},
-		default: '',
-		placeholder: 'Liam\'s birthday party. Don\'t forget a gift.',
-		displayOptions: {
-			show: {
-				operation: [
-					'createNewEvent',
-					'updateEvent',
-				]
-			},
-		},
-	},
+	//
+	//
+	// ADDITINAL FIELDS ONLY REGION
+	//
 
 	{
 		displayName: 'Additional Fields',
@@ -304,113 +148,25 @@ export const otherFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				operation: [
-					'createNewEvent',
-					'updateEvent',
+					'getAvailability',
 				]
 			},
 		},
 		options: [
 			{
-				displayName: 'Is All Day Event?',
-				name: 'isAllDayEvent',
-				type: 'boolean',
-				default: false,
-				description: 'Whether it is an all day event. If updating, an event can not be changed from a all day event to a nonall day event without specifying times, it will throw an error.',
-			},
-			{
-				displayName: 'Is Private?',
-				name: 'isPrivate',
-				type: 'boolean',
-				default: false,
-				description: 'Whether the event details will not be shared even when the calendar is made public or shared with others with any permissions except delegate permission',
-			},
-			{
-				displayName: 'URL To Attached',
-				name: 'url',
-				type: 'string',
-				default: '',
-				placeholder: 'https://meet.zoho.com/example',
-				description: 'A URL that will be attached to the calendar event',
-			},
-			{
-				displayName: 'Location',
-				name: 'location',
-				type: 'string',
-				default: '',
-				placeholder: '2600 Benjamin Franklin Pkwy, Philadelphia, PA 19130',
-				description: 'Location of the event. Addresses and coordinates work.',
-			},
-			{
-				displayName: 'Color',
-				name: 'color',
-				type: 'color',
-				default: '',
-				placeholder: '',
-				description: 'The events color',
-			},
-			{
-				displayName: 'Show On Free/Busy Schedule',
-				name: 'freeBusy',
-				type: 'number',
-				typeOptions: {
-					maxValue: 1,
-					minValue: 0,
-					numberStepSize: 1,
-				},
-				default: '',
-				description: 'Whether the event gets added to the free/busy schedule. 0 = adds it | 1 = does not add it.',
-			},
-			{
-				displayName: 'Attendees',
-				name: 'attendees',
-				placeholder: 'Add attendees',
-				type: 'fixedCollection',
-				default: {},
-				typeOptions: {
-					multipleValues: true,
-				},
-				description: 'Who is invited',
+				displayName: 'Zoho Region',
+				name: 'region',
+				type: 'options',
+				noDataExpression: true,
 				options: [
-					{
-						name: 'attendeesValues',
-						displayName: 'Attendee',
-						values: [
-							{
-								displayName: 'Email',
-								name: 'email',
-								type: 'string',
-
-								default: '',
-								placeholder: 'name@email.com',
-
-								required: true,
-
-							},
-						],
-					},
-
+					...countryDomains
 				],
+				// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
+				default: '.com',
 			},
 
 
 		],
-	},
-	// attachment id for get attachment details
-	{
-		displayName: 'File ID',
-		name: 'attachmentId',
-		required: true,
-		type: 'string',
-		default: '',
-		placeholder: '08cfc73476024a75a957c0524691a250@zoho.com',
-		description: 'The ID of the attachement you want. Find the ID by using a \'Get Event Details\' node first.',
-		displayOptions: {
-			show: {
-				operation: [
-					'downloadAttachment',
-				]
-			},
-		},
 	},
 ]
 

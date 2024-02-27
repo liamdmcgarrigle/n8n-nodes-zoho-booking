@@ -16,10 +16,13 @@ import {
 	otherOperations
 } from './otherDescription';
 import {
+	checkStartBeforeEnd,
 	checkTimeZone,
+	checkTimesExist,
 	createBookingBody,
 	customCustomerFields,
 	defaultCustomerFields,
+	getAvailabilityForDateRange,
 	getBookingDetails,
 	keyValueInputCustomerFields,
 	updateBookingStatus,
@@ -324,6 +327,52 @@ export class ZohoBookings implements INodeType {
 
 
 					} // appt operations
+
+					if( this.getNodeParameter('resource', 0) === 'otherActions' ) {
+
+						// --------------------------------------------------------------------------------
+						// ------------------------------ Get Availability  -------------------------------
+						// --------------------------------------------------------------------------------
+						if( this.getNodeParameter('operation', 0) === 'getAvailability' ) {
+
+							const serviceId = this.getNodeParameter('serviceId', itemIndex, '') as string;
+							const staffId = this.getNodeParameter('staffId', itemIndex, '') as string;
+							const startDate = this.getNodeParameter('startOfSearchRangeTime', itemIndex, '') as string;
+							const endDate = this.getNodeParameter('endOfSearchRangeTime', itemIndex, '') as string;
+
+							checkTimesExist(this.getNode(),startDate, itemIndex);
+							checkTimesExist(this.getNode(),endDate, itemIndex);
+							checkStartBeforeEnd(this.getNode(), startDate, endDate, itemIndex);
+
+
+
+
+							const response = await getAvailabilityForDateRange(
+								this,
+								baseUrl,
+								serviceId,
+								staffId,
+								startDate,
+								endDate
+							)
+
+							// const response = await getAvailabilityForSingleDate(
+							// 	this,
+							// 	baseUrl,
+							// 	serviceId,
+							// 	staffId,
+							// 	startDate,
+							// 	)
+
+
+
+
+							item.json['availableTimeSlots'] = response;
+
+						}
+
+
+					} // other operations
 
 
 

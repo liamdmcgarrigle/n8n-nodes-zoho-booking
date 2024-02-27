@@ -12,7 +12,8 @@
 		- [Resource Booking](#resource-booking)
 		- [Group Booking (Multiple Customers)](#group-booking-multiple-customers)
 		- [Collective Booking (Multiple Staff)](#collective-booking-multiple-staff)
-		- [Mark as Completed/No Show](#mark-as-completedno-show)
+	- [Mark as Completed/No Show](#mark-as-completedno-show)
+	- [Get Available Times](#get-available-times)
 
 # Overview of Community Zoho Calendar n8n Node
 I created this node because an organization I am affiliated with uses Zoho software and I would like to make it easier for our users to automate with n8n.  \
@@ -87,7 +88,7 @@ You could work around this with an n8n workflow and create a resource booking wh
 ### Group Booking (Multiple Customers)
 Book with a group booking by passing:
 - The service ID made for the group in the services section
-- The staff ID assigned to the the group in the services section
+- The staff ID assigned to the group in the services section
 
 Everything else can be filled an normal.
 
@@ -100,7 +101,7 @@ It should work by passing in the service ID in the corresponding field and passi
 
 If you figure out how to access the group IDs please [let me know](https://github.com/liamdmcgarrigle)!
 
-### Mark as Completed/No Show
+## Mark as Completed/No Show
 You can not mark an appointment as completed or as a no-show before the start time. It needs to be after the start time.
 
 If you want to set as no-show or complete beforehand, you can make a workaround using n8n. Have a workflow specifically for this use.  \
@@ -108,3 +109,10 @@ Have the workflow check the start time of the appointment, then have a wait node
 Then have the node after that be the no-show or completed step. 
 
 There will be a delay, but this is the only option Zoho Bookings gave us.
+
+## Get Available Times
+This function fetches available times based on the maximum booking advance period set in your Zoho Bookings settings. For example, if appointments can only be booked up to two weeks ahead, the function will not return times beyond that period.
+
+To reduce API calls to Zoho, only request the minimum number of days needed for your search. Note that each day in the range will be a separate API call, even if no availability exists for that day. For instance, a 60-day search on a powerful n8n server required about a minute and a half to complete since it will be waiting for 60 API calls to complete
+
+For single-day searches, set the end date to the same as the start date to optimize the process.
