@@ -29,6 +29,7 @@ import {
 	getAvailabilityForDateRange,
 	getBookingDetails,
 	keyValueInputCustomerFields,
+	rescheduleBookingBody,
 	updateBookingStatus,
 } from './GenericFunctions';
 const { DateTime } = require("luxon");
@@ -207,50 +208,40 @@ export class ZohoBookings implements INodeType {
 						// --------------------------------------------------------------------------------
 						if( this.getNodeParameter('operation', 0) === 'rescheduleAppointment' ) {
 
-	// This is very annoyingly not working. I tried to debug their api for hours but the issue is definitly on their side
-	// I am moving on for now and will come back to this.
-	// i posed here https://help.zoho.com/portal/en/community/topic/issues-with-reschedule-api
-	// hopefully someone will help me
+							const bookingId = this.getNodeParameter('bookingId', itemIndex, '') as string;
+							const startTime = this.getNodeParameter('startTime', itemIndex, '') as string;
+							const additionalFields = this.getNodeParameter('additionalFields', itemIndex) as IDataObject;
+							const timeZone = additionalFields.timeZone as string;
 
 
+							let formData: rescheduleBookingBody = {
+								"booking_id": bookingId,
+								"start_time": DateTime.fromFormat(startTime, "yyyy-MM-dd'T'HH:mm:ss").toFormat('dd-MMM-yyyy HH:mm'),
+							}
+							console.log(formData);
 
-						// 	const bookingId = this.getNodeParameter('bookingId', itemIndex, '') as string;
-						// 	const startTime = this.getNodeParameter('startTime', itemIndex, '') as string;
-						// 	const additionalFields = this.getNodeParameter('additionalFields', itemIndex) as IDataObject;
-						// 	const timeZone = additionalFields.timeZone as string;
+							if(timeZone){
+								checkTimeZone(this.getNode(), timeZone, itemIndex);
+								formData.time_zone = timeZone;
+							}
 
-						// 	// const apptInfo = await getBookingDetails(this, baseUrl, bookingId);
+							const options: IHttpRequestOptions = {
+								url: `${baseUrl}/rescheduleappointment`,
+								method: 'POST',
+								body:formData,
+								json: false,
+								headers: {
+									"content-type":"multipart/form-data",
+								}
+							};
 
-						// 	let formData: rescheduleBookingBody = {
-						// 		"booking_id": bookingId,
-						// 		// "start_time": DateTime.fromFormat(startTime, "yyyy-MM-dd HH:mm:ss").toFormat('dd-MMM-yyyy HH:mm:ss'),
-						// 		"start_time": DateTime.fromFormat(startTime, "yyyy-MM-dd HH:mm:ss").toFormat('dd-MMM-yyyy HH:mm:ss'),
+								const response = await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'zohoBookingsOAuth2Api',
+								options,
+							);
 
-						// 		// "staff_id": apptInfo.response.returnvalue.staff_id,
-						// 	}
-
-						// 	if(timeZone){
-						// 		checkTimeZone(this.getNode(), timeZone, itemIndex);
-						// 		formData.time_zone = timeZone;
-						// 	}
-
-						// 	const options: IHttpRequestOptions = {
-						// 		url: `${baseUrl}/rescheduleappointment`,
-						// 		method: 'POST',
-						// 		body:formData,
-						// 		json: false,
-						// 		headers: {
-						// 			"content-type":"multipart/form-data",
-						// 		}
-						// 	};
-
-						// 		const response = await this.helpers.httpRequestWithAuthentication.call(
-						// 		this,
-						// 		'zohoBookingsOAuth2Api',
-						// 		options,
-						// 	);
-
-						// 	item.json['zohoResponse'] = response;
+							item.json['zohoResponse'] = response;
 
 							}
 

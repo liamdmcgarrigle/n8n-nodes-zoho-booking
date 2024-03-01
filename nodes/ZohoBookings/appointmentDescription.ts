@@ -56,21 +56,6 @@ export const appointmentOperations: INodeProperties[] = [
 ]
 
 export const appointmentFields: INodeProperties[] = [
-
-	// TEMP WHILE RESCHEDULE DOESNT WORK
-	{
-		displayName: 'This functionality currently does not work due to Zoho\'s API being broken. I intend to get this updated as soon as Zoho support gets back to me and fixes the issue.',
-		name: 'notice',
-		type: 'notice',
-		default: '',
-		displayOptions: {
-			show: {
-				operation: [
-					'rescheduleAppointment',
-				]
-			},
-		},
-	},
 	{
 		displayName: 'This will only work after the appointment has started. See docs for more info.',
 		name: 'notice',
@@ -100,7 +85,7 @@ export const appointmentFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				operation: [
-					// 'rescheduleAppointment',
+					'rescheduleAppointment',
 					'updateAppointment',
 					'getAppointment',
 					'cancelAppointment',
@@ -154,7 +139,7 @@ export const appointmentFields: INodeProperties[] = [
 			show: {
 				operation: [
 					'bookAppointment',
-					// 'rescheduleAppointment',
+					'rescheduleAppointment',
 				]
 			},
 		},
@@ -420,48 +405,6 @@ export const appointmentFields: INodeProperties[] = [
 
 	//
 	//
-	// ADDITINAL FIELDS FOR rescheduling APPOINTMENT
-	//
-
-	{
-		displayName: 'Additional Fields',
-		name: 'additionalFields',
-		type: 'collection',
-		default: {},
-		placeholder: 'Add Field',
-		displayOptions: {
-			show: {
-				operation: [
-					// 'rescheduleAppointment',
-				]
-			},
-		},
-		options: [
-			{
-				displayName: 'Time Zone',
-				name: 'timeZone',
-				type: 'string',
-				default: '={{ $now.format(\'z\') }}',
-				description: 'The time zone of the event. Format like "America/New_York".',
-			},
-			{
-				displayName: 'Zoho Region',
-				name: 'region',
-				type: 'options',
-				noDataExpression: true,
-				options: [
-					...countryDomains
-				],
-				// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
-				default: '.com',
-			},
-
-
-		],
-	},
-
-	//
-	//
 	// ADDITINAL FIELDS FOR the rest
 	//
 
@@ -478,6 +421,7 @@ export const appointmentFields: INodeProperties[] = [
 					'cancelAppointment',
 					'markAsNoShow',
 					'markAsCompleted',
+					'rescheduleAppointment',
 				]
 			},
 		},
